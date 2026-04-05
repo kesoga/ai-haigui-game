@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #020617;
+  --color-brand-surface: #0f172a;
+  --color-brand-text: #e2e8f0;
+  --color-brand-accent: #fbbf24;
+}
+
+body {
+  @apply m-0 bg-slate-950 text-slate-200 antialiased;
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+/* 自定义动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 礼花爆炸动画 */
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-100px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(360deg) translateY(-200px) scale(0);
+  }
+}
+
+/* 错误抖动动画 */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-10px);
+  }
+  40%, 80% {
+    transform: translateX(10px);
+  }
+}
+
+/* 按钮悬停动画 */
+@keyframes buttonHover {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* 输入框聚焦动画 */
+@keyframes inputFocus {
+  from {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.2);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+  }
+}
+
+/* 消息出现动画 */
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 页面切换动画 */
+@keyframes pageTransition {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.animate-explode {
+  animation: explode 2s ease-out forwards;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-buttonHover {
+  animation: buttonHover 0.2s ease-out forwards;
+}
+
+.animate-inputFocus {
+  animation: inputFocus 0.2s ease-out forwards;
+}
+
+.animate-messageIn {
+  animation: messageIn 0.3s ease-out;
+}
+
+.animate-pageTransition {
+  animation: pageTransition 0.4s ease-out;
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+  
+  /* 游戏页面优化 */
+  main {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  
+  /* 聊天区域高度优化 */
+  section[style*="height: 450px"] {
+    height: 350px !important;
+  }
+  
+  /* 按钮优化 */
+  button {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  
+  /* 输入框优化 */
+  input {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  
+  /* 最终答案输入区域优化 */
+  .mt-4 {
+    margin-top: 12px !important;
+  }
+  
+  /* 消息气泡优化 */
+  .max-w-\[85\%\] {
+    max-width: 90% !important;
+  }
+  
+  /* 响应式间距 */
+  .gap-3 {
+    gap: 8px !important;
+  }
+  
+  /* 响应式文本大小 */
+  .text-2xl {
+    font-size: 1.5rem !important;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem !important;
+  }
+  
+  /* 响应式内边距 */
+  .p-4 {
+    padding: 12px !important;
+  }
+  
+  .p-6 {
+    padding: 16px !important;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
