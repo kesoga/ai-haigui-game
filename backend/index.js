@@ -75,7 +75,13 @@ app.get('/api/test', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Test endpoint working' });
+});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 // 检查用户输入是否与汤底高度相似
 function isSimilarToBottom(input, bottom) {
   // 预处理：去除多余空格和标点符号，转换为小写
