@@ -1,0 +1,29 @@
+# .github/workflows/deploy-pages.yml
+name: 自动部署到GitHub Pages
+on:
+  push:
+    branches: [main] # 推送到main分支时触发
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4 # 拉取代码
+      - name: 安装Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci # 安装依赖
+      - run: npm run build # 打包项目
+      - name: 配置Pages
+        uses: actions/configure-pages@v5
+      - name: 上传打包产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist # 前端打包后的目录
+      - name: 部署到Pages
+        uses: actions/deploy-pages@v4
