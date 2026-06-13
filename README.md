@@ -1,6 +1,6 @@
 # AI 海龟汤游戏网站
 
-一个基于 AI 主持的文字推理游戏。玩家选择故事后，通过连续提问推理真相；AI 主持只允许回答「是」「否」「无关」。
+一个基于 AI 主持的文字推理游戏。玩家选择故事后，通过连续提问推理真相，AI 主持只允许回答“是”“否”“无关”。
 
 ## 项目结构
 
@@ -10,7 +10,7 @@ ai-haigui-game-master/
   backend/    Node.js + Express + DeepSeek API proxy
 ```
 
-## 快速开始
+## 本地启动
 
 ### 1. 启动后端
 
@@ -24,14 +24,12 @@ npm start
 在 `backend/.env` 中配置：
 
 ```env
+HOST=127.0.0.1
 PORT=3000
 CORS_ORIGIN=http://localhost:5173
 DEEPSEEK_API_KEY=your_deepseek_api_key
-RATE_LIMIT_WINDOW_MS=60000
-CHAT_RATE_LIMIT_MAX=30
+APP_PASSWORD=change_this_shared_password
 ```
-
-如果暂时没有 `DEEPSEEK_API_KEY`，后端会返回兜底答案「无关」，方便本地页面流程继续跑通。
 
 ### 2. 启动前端
 
@@ -42,6 +40,34 @@ npm run dev
 ```
 
 访问 [http://localhost:5173](http://localhost:5173)。
+
+## Vercel 前端部署
+
+仓库根目录已经包含 `vercel.json`，从 Vercel 导入 GitHub 仓库时可以直接部署前端：
+
+- Install Command: `cd frontend && npm ci`
+- Build Command: `cd frontend && npm run build`
+- Output Directory: `frontend/dist`
+
+前端部署到 Vercel 后，需要在 Vercel 项目的 Environment Variables 中添加：
+
+```env
+VITE_API_BASE_URL=https://你的后端部署地址
+```
+
+例如后端部署到 Render：
+
+```env
+VITE_API_BASE_URL=https://ai-haigui-game.onrender.com
+```
+
+后端也要允许 Vercel 前端域名访问：
+
+```env
+CORS_ORIGIN=https://你的-vercel-项目.vercel.app
+```
+
+注意：`VITE_API_BASE_URL` 是公开的后端地址，不是密钥。`DEEPSEEK_API_KEY` 和 `APP_PASSWORD` 只放在后端环境变量中，不能放到前端或 GitHub。
 
 ## 常用命令
 
@@ -58,26 +84,12 @@ npm run build
 npm run lint
 ```
 
-## 当前能力
-
-- 游戏大厅：按难度展示故事卡片
-- 游戏页：展示汤面、对话历史、提问次数和最终答案输入
-- AI 问答：后端代理 AI 调用，并强制校验「是 / 否 / 无关」
-- 汤底揭晓：通过后端接口加载故事真相，并展示推理轨迹
-- 本地持久化：使用 `localStorage` 保存会话
-
 ## 安全说明
 
-- 不要把 `backend/.env` 提交到仓库。
+- 不要提交 `backend/.env`。
 - AI API Key 只放在后端环境变量中。
-- `/api/chat` 会优先按 `story.id` 在后端查找汤底，前端提问请求不发送完整汤底。
-- `/api/stories/:storyId/bottom` 用于揭晓汤底，故事答案不再打包进前端公开数据。
-
-## 部署
-
-- 前端：GitHub Pages / Vercel / Netlify 均可部署静态产物。
-- 后端：Railway / Render / Fly.io / 任意 Node.js 服务均可。
-- 生产环境务必配置 `CORS_ORIGIN` 为真实前端域名。
+- 前端只保存公开配置，例如 `VITE_API_BASE_URL`。
+- 如果开启 `APP_PASSWORD`，用户需要先输入访问密码，才能调用后端 AI 接口。
 
 ## License
 
