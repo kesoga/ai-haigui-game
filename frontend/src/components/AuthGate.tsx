@@ -41,7 +41,7 @@ export function AuthGate({ children }: AuthGateProps) {
       setAuthenticated(status.authenticated)
       setPassword('')
     } catch (err) {
-      setError(err instanceof Error ? err.message : '访问密码错误')
+      setError(err instanceof Error ? err.message : '访问密码验证失败')
     } finally {
       setIsSubmitting(false)
     }
@@ -86,7 +86,7 @@ export function AuthGate({ children }: AuthGateProps) {
           disabled={!password.trim() || isSubmitting}
           className={`mt-5 w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all ${!password.trim() || isSubmitting ? 'cursor-not-allowed bg-stone-800 text-stone-500' : 'bg-amber-300 text-stone-950 hover:bg-amber-200'}`}
         >
-          {isSubmitting ? '验证中' : '进入档案室'}
+          {isSubmitting ? '验证中...' : '进入档案室'}
         </button>
       </form>
     </main>

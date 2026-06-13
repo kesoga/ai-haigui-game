@@ -1,8 +1,10 @@
 import { getLocalStoryBottom } from '../constants/storyBottoms'
 import type { TStory } from '../types/game'
 
-const BACKEND_API_URL = '/api/chat'
-const STORIES_API_URL = '/api/stories'
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const BACKEND_API_URL = `${API_BASE_URL}/api/chat`
+const STORIES_API_URL = `${API_BASE_URL}/api/stories`
+const AUTH_API_URL = `${API_BASE_URL}/api/auth`
 
 interface ChatRequest {
   question: string
@@ -39,27 +41,34 @@ interface GuessResponse extends ApiResponse {
   similarity: number
 }
 
+function formatApiError(response: Response, fallback: string) {
+  if (response.status === 404) {
+    return 'API 404：没有找到后端接口，请检查 VITE_API_BASE_URL 是否指向后端服务地址。'
+  }
+  return `${fallback}: ${response.status}`
+}
+
 async function readJsonResponse<T extends ApiResponse>(response: Response): Promise<T> {
   try {
     return await response.json() as T
   } catch {
-    throw new Error(response.ok ? '响应格式错误' : `API 请求失败: ${response.status}`)
+    throw new Error(response.ok ? '响应格式错误' : formatApiError(response, 'API 请求失败'))
   }
 }
 
 export async function checkAuthStatus(): Promise<AuthStatusResponse> {
-  const response = await fetch('/api/auth/status', {
+  const response = await fetch(`${AUTH_API_URL}/status`, {
     credentials: 'include'
   })
   const data = await readJsonResponse<AuthStatusResponse>(response)
   if (!response.ok || data.status !== 'success') {
-    throw new Error(data.message || '认证状态检查失败')
+    throw new Error(data.message || formatApiError(response, '认证状态检查失败'))
   }
   return data
 }
 
 export async function loginWithPassword(password: string): Promise<AuthStatusResponse> {
-  const response = await fetch('/api/auth/login', {
+  const response = await fetch(`${AUTH_API_URL}/login`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -69,7 +78,7 @@ export async function loginWithPassword(password: string): Promise<AuthStatusRes
   })
   const data = await readJsonResponse<AuthStatusResponse>(response)
   if (!response.ok || data.status !== 'success') {
-    throw new Error(data.message || '访问密码错误')
+    throw new Error(data.message || formatApiError(response, '访问密码错误'))
   }
   return data
 }
@@ -98,7 +107,7 @@ export async function askAI(
 
     if (!response.ok) {
       const errorData = await readJsonResponse<ChatResponse>(response)
-      throw new Error(errorData.message || `API 请求失败: ${response.status}`)
+      throw new Error(errorData.message || formatApiError(response, 'API 请求失败'))
     }
 
     const data = await readJsonResponse<ChatResponse>(response)
@@ -131,7 +140,7 @@ export async function getStoryBottom(storyId: string): Promise<string> {
 
     const data = await readJsonResponse<BottomResponse>(response)
     if (!response.ok || data.status !== 'success') {
-      throw new Error(data.message || '汤底获取失败')
+      throw new Error(data.message || formatApiError(response, '汤底获取失败'))
     }
 
     return data.bottom
@@ -161,7 +170,7 @@ export async function submitFinalAnswer(
 
     const data = await readJsonResponse<GuessResponse>(response)
     if (!response.ok || data.status !== 'success') {
-      throw new Error(data.message || '最终答案提交失败')
+      throw new Error(data.message || formatApiError(response, '最终答案提交失败'))
     }
 
     return {
