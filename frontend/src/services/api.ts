@@ -4,7 +4,6 @@ import type { TStory } from '../types/game'
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
 const BACKEND_API_URL = `${API_BASE_URL}/api/chat`
 const STORIES_API_URL = `${API_BASE_URL}/api/stories`
-const AUTH_API_URL = `${API_BASE_URL}/api/auth`
 
 interface ChatRequest {
   question: string
@@ -15,11 +14,6 @@ interface ApiResponse {
   status: string
   message?: string
   timestamp?: string
-}
-
-interface AuthStatusResponse extends ApiResponse {
-  authRequired: boolean
-  authenticated: boolean
 }
 
 interface ChatResponse extends ApiResponse {
@@ -56,33 +50,6 @@ async function readJsonResponse<T extends ApiResponse>(response: Response): Prom
   }
 }
 
-export async function checkAuthStatus(): Promise<AuthStatusResponse> {
-  const response = await fetch(`${AUTH_API_URL}/status`, {
-    credentials: 'include'
-  })
-  const data = await readJsonResponse<AuthStatusResponse>(response)
-  if (!response.ok || data.status !== 'success') {
-    throw new Error(data.message || formatApiError(response, '认证状态检查失败'))
-  }
-  return data
-}
-
-export async function loginWithPassword(password: string): Promise<AuthStatusResponse> {
-  const response = await fetch(`${AUTH_API_URL}/login`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ password })
-  })
-  const data = await readJsonResponse<AuthStatusResponse>(response)
-  if (!response.ok || data.status !== 'success') {
-    throw new Error(data.message || formatApiError(response, '访问密码错误'))
-  }
-  return data
-}
-
 export async function askAI(
   question: string,
   story: TStory
@@ -98,7 +65,6 @@ export async function askAI(
 
     const response = await fetch(BACKEND_API_URL, {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -134,9 +100,7 @@ export async function askAI(
 
 export async function getStoryBottom(storyId: string): Promise<string> {
   try {
-    const response = await fetch(`${STORIES_API_URL}/${encodeURIComponent(storyId)}/bottom`, {
-      credentials: 'include'
-    })
+    const response = await fetch(`${STORIES_API_URL}/${encodeURIComponent(storyId)}/bottom`)
 
     const data = await readJsonResponse<BottomResponse>(response)
     if (!response.ok || data.status !== 'success') {
@@ -161,7 +125,6 @@ export async function submitFinalAnswer(
   try {
     const response = await fetch(`${STORIES_API_URL}/${encodeURIComponent(storyId)}/guess`, {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },

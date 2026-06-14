@@ -1,7 +1,6 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const crypto = require('crypto');
 const { storiesById } = require('./stories');
 
 dotenv.config({ quiet: true });
@@ -9,9 +8,6 @@ dotenv.config({ quiet: true });
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '127.0.0.1';
-const APP_PASSWORD = process.env.APP_PASSWORD || '';
-const AUTH_COOKIE_NAME = 'haigui_auth';
-const AUTH_TOKEN_TTL_MS = Number(process.env.AUTH_TOKEN_TTL_MS || 24 * 60 * 60 * 1000);
 const VALID_ANSWERS = ['是', '否', '无关'];
 const DEFAULT_TIMEOUT_MS = Number(process.env.ASK_TIMEOUT_MS || 8000);
 const DEFAULT_RETRY_MAX = Number(process.env.ASK_RETRY_MAX || 2);
@@ -19,7 +15,6 @@ const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
 const CHAT_RATE_LIMIT_MAX = Number(process.env.CHAT_RATE_LIMIT_MAX || 30);
 const REVEAL_RATE_LIMIT_MAX = Number(process.env.REVEAL_RATE_LIMIT_MAX || 60);
 const rateLimitBuckets = new Map();
-const authTokens = new Map();
 
 function parseAllowedOrigins() {
   const configured = process.env.CORS_ORIGIN || process.env.FRONTEND_ORIGIN;
@@ -43,71 +38,12 @@ app.use(cors({
     }
     callback(new Error('CORS origin is not allowed'));
   },
-  credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
 
 app.use(express.json({ limit: '32kb' }));
 
-function parseCookies(cookieHeader) {
-  return String(cookieHeader || '')
-    .split(';')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .reduce((cookies, part) => {
-      const separatorIndex = part.indexOf('=');
-      if (separatorIndex === -1) {
-        return cookies;
-      }
-      const name = decodeURIComponent(part.slice(0, separatorIndex));
-      const value = decodeURIComponent(part.slice(separatorIndex + 1));
-      cookies[name] = value;
-      return cookies;
-    }, {});
-}
-
-function createAuthToken() {
-  const token = crypto.randomUUID();
-  authTokens.set(token, Date.now() + AUTH_TOKEN_TTL_MS);
-  return token;
-}
-
-function isAuthTokenValid(token) {
-  const expiresAt = authTokens.get(token);
-  if (!expiresAt) {
-    return false;
-  }
-  if (expiresAt <= Date.now()) {
-    authTokens.delete(token);
-    return false;
-  }
-  return true;
-}
-
-function setAuthCookie(res, token) {
-  const maxAgeSeconds = Math.floor(AUTH_TOKEN_TTL_MS / 1000);
-  res.set('Set-Cookie', `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAgeSeconds}`);
-}
-
-function requireAppAuth(req, res, next) {
-  if (!APP_PASSWORD) {
-    next();
-    return;
-  }
-
-  const cookies = parseCookies(req.headers.cookie);
-  if (isAuthTokenValid(cookies[AUTH_COOKIE_NAME])) {
-    next();
-    return;
-  }
-
-  res.status(401).json({
-    status: 'error',
-    message: '需要访问密码',
-    timestamp: new Date().toISOString()
-  });
-}
 
 app.use((req, res, next) => {
   const startTime = Date.now();
@@ -136,7 +72,7 @@ function rateLimit({ windowMs, max, keyPrefix }) {
       res.set('Retry-After', String(retryAfterSeconds));
       res.status(429).json({
         status: 'error',
-        message: '请求过于频繁，请稍后再试',
+        message: '璇锋眰杩囦簬棰戠箒锛岃绋嶅悗鍐嶈瘯',
         retryAfterSeconds,
         timestamp: new Date().toISOString()
       });
@@ -164,7 +100,7 @@ function validateChatPayload(body) {
     return 'story 必须是对象';
   }
   if (typeof story.id !== 'string' || !story.id.trim()) {
-    return 'story 必须包含非空 id 字符串字段';
+    return 'story 必须包含非空 id 字段';
   }
   if (story.surface !== undefined && typeof story.surface !== 'string') {
     return 'story.surface 必须是字符串';
@@ -191,7 +127,7 @@ function resolveStory(requestStory) {
 function normalizeForComparison(text) {
   return String(text || '')
     .toLowerCase()
-    .replace(/[，。！？、；：“”‘’"'()[\]{}<>《》\s]/g, '')
+    .replace(/[锛屻€傦紒锛熴€侊紱锛氣€溾€濃€樷€?'()[\]{}<>銆娿€媆s]/g, '')
     .trim();
 }
 
@@ -238,10 +174,12 @@ function hasNegation(text) {
 function hasConflictSignal(question, bottom) {
   const cleanQuestion = normalizeForComparison(question);
   const cleanBottom = normalizeForComparison(bottom);
+
   if (['死', '死亡', '去世'].some((word) => cleanQuestion.includes(word))
     && ['求救', '被困', '没有消失', '活着', '安好'].some((word) => cleanBottom.includes(word))) {
     return true;
   }
+
   if (['被别人救', '被人救', '别人救', '获救'].some((word) => cleanQuestion.includes(word))
     && ['爬出求救', '留下的标记', '提醒救援'].some((word) => cleanBottom.includes(word))) {
     return true;
@@ -273,7 +211,7 @@ function hasImpliedBottomSignal(question, bottom) {
 
   const implicationRules = [
     {
-      questionSignals: ['走了', '离开', '出去了', '不在电梯', '不见了'],
+      questionSignals: ['走了', '离开', '出去了', '不在电梯', '不见人'],
       bottomSignals: ['爬出求救', '没有消失', '顶盖爬出']
     },
     {
@@ -334,18 +272,16 @@ function answerFromLocalHeuristics(question, story) {
 }
 
 function buildSystemPrompt(story) {
-  return `你是海龟汤游戏裁判。请根据汤面和汤底回答玩家问题。
-只能返回一个词：是、否、无关。
-
+  return `你是海龟汤游戏裁判。请根据汤面和汤底回答玩家问题。只能返回一个词：是、否、无关。
 判定规则：
-1. 是：玩家问题包含汤底中的关键信息，逻辑与汤底一致，能够推出汤底或汤底的一部分。
+1. 是：玩家问题包含汤底中的关键信息，逻辑与汤底一致，能够推理出汤底或汤底的一部分。
 2. 否：玩家问题和汤底在逻辑上冲突，或提出了与汤底不同/相反的事实。
 3. 无关：玩家问题和汤底在内容、因果、逻辑上都没有关系，无法帮助推理汤底。
 4. 如果玩家要求直接揭示完整真相，而不是提出猜测，返回“无关”。
 
 注意：
 - 不要机械匹配字面词，要理解同义表达和短问法。
-- “人走了吗”可以理解为“人是否离开了原位置/不在现场了”，如果汤底支持，应回答“是”。
+- “人走了吗”可理解为“人是否离开了原位置/不在现场了”，如果汤底支持，应回答“是”。
 - “人被困了吗”如果对应汤底里的被困事实，应回答“是”。
 - “被别人救了吗”如果汤底是自己逃出、自己求救或只是留下标记，应回答“否”。
 - 问题中出现“无法、不是为了、没有办法”等词时，不要因为有否定字就直接判“否”；必须看整句话是否和汤底逻辑冲突。
@@ -406,7 +342,7 @@ async function askProviderWithFallback(question, story) {
     }
 
     return {
-      answer: '无关',
+      answer: '鏃犲叧',
       isFallback: true,
       retriesCount: 0,
       providerResponseValid: false
@@ -440,7 +376,7 @@ async function askProviderWithFallback(question, story) {
     retriesCount += 1;
   }
 
-  console.warn('Provider response fell back to 无关:', lastRawAnswer);
+  console.warn('Provider response fell back to 鏃犲叧:', lastRawAnswer);
 
   const localAnswer = answerFromLocalHeuristics(question, story);
   if (localAnswer) {
@@ -452,7 +388,7 @@ async function askProviderWithFallback(question, story) {
   }
 
   return {
-    answer: '无关',
+    answer: '鏃犲叧',
     isFallback: true,
     retriesCount: Math.max(0, retriesCount - 1),
     providerResponseValid: false
@@ -462,7 +398,7 @@ async function askProviderWithFallback(question, story) {
 app.get('/', (req, res) => {
   res.json({
     status: 'success',
-    message: 'AI 海龟汤后端服务运行中',
+    message: 'AI 娴烽緹姹ゅ悗绔湇鍔¤繍琛屼腑',
     endpoints: {
       health: '/api/test',
       chat: '/api/chat'
@@ -479,66 +415,12 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-app.get('/api/auth/status', (req, res) => {
-  if (!APP_PASSWORD) {
-    res.json({
-      status: 'success',
-      authRequired: false,
-      authenticated: true,
-      timestamp: new Date().toISOString()
-    });
-    return;
-  }
-
-  const cookies = parseCookies(req.headers.cookie);
-  res.json({
-    status: 'success',
-    authRequired: true,
-    authenticated: isAuthTokenValid(cookies[AUTH_COOKIE_NAME]),
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.post('/api/auth/login', rateLimit({
-  windowMs: RATE_LIMIT_WINDOW_MS,
-  max: 10,
-  keyPrefix: 'auth'
-}), (req, res) => {
-  if (!APP_PASSWORD) {
-    res.json({
-      status: 'success',
-      authRequired: false,
-      authenticated: true,
-      timestamp: new Date().toISOString()
-    });
-    return;
-  }
-
-  const { password } = req.body || {};
-  if (typeof password !== 'string' || password !== APP_PASSWORD) {
-    res.status(401).json({
-      status: 'error',
-      message: '访问密码错误',
-      timestamp: new Date().toISOString()
-    });
-    return;
-  }
-
-  const token = createAuthToken();
-  setAuthCookie(res, token);
-  res.json({
-    status: 'success',
-    authRequired: true,
-    authenticated: true,
-    timestamp: new Date().toISOString()
-  });
-});
 
 app.post('/api/chat', rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
   max: CHAT_RATE_LIMIT_MAX,
   keyPrefix: 'chat'
-}), requireAppAuth, async (req, res, next) => {
+}), async (req, res, next) => {
   try {
     const validationError = validateChatPayload(req.body);
     if (validationError) {
@@ -576,7 +458,7 @@ app.get('/api/stories/:storyId/bottom', rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
   max: REVEAL_RATE_LIMIT_MAX,
   keyPrefix: 'bottom'
-}), requireAppAuth, (req, res) => {
+}), (req, res) => {
   const story = storiesById.get(req.params.storyId);
   if (!story) {
     res.status(404).json({ status: 'error', message: '故事不存在', timestamp: new Date().toISOString() });
@@ -595,7 +477,7 @@ app.post('/api/stories/:storyId/guess', rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
   max: CHAT_RATE_LIMIT_MAX,
   keyPrefix: 'guess'
-}), requireAppAuth, (req, res) => {
+}), (req, res) => {
   const story = storiesById.get(req.params.storyId);
   const { answer } = req.body || {};
 

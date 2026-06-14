@@ -28,7 +28,6 @@ HOST=127.0.0.1
 PORT=3000
 CORS_ORIGIN=http://localhost:5173
 DEEPSEEK_API_KEY=your_deepseek_api_key
-APP_PASSWORD=change_this_shared_password
 ```
 
 ### 2. 启动前端
@@ -67,7 +66,7 @@ VITE_API_BASE_URL=https://ai-haigui-game.onrender.com
 CORS_ORIGIN=https://你的-vercel-项目.vercel.app
 ```
 
-注意：`VITE_API_BASE_URL` 是公开的后端地址，不是密钥。`DEEPSEEK_API_KEY` 和 `APP_PASSWORD` 只放在后端环境变量中，不能放到前端或 GitHub。
+注意：`VITE_API_BASE_URL` 是公开的后端地址，不是密钥。`DEEPSEEK_API_KEY` 只放在后端环境变量中，不能放到前端或 GitHub。
 
 ## 常用命令
 
@@ -89,7 +88,7 @@ npm run lint
 - 不要提交 `backend/.env`。
 - AI API Key 只放在后端环境变量中。
 - 前端只保存公开配置，例如 `VITE_API_BASE_URL`。
-- 如果开启 `APP_PASSWORD`，用户需要先输入访问密码，才能调用后端 AI 接口。
+- 浏览器只会调用后端接口，不会直接接触 `DEEPSEEK_API_KEY`。
 
 ## License
 
