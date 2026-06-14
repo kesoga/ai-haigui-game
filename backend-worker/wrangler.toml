@@ -1,0 +1,15 @@
+name = "ai-haigui-game-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+DEEPSEEK_MODEL = "deepseek-chat"
+ASK_RETRY_MAX = "2"
+ASK_TIMEOUT_MS = "8000"
+RATE_LIMIT_WINDOW_MS = "60000"
+CHAT_RATE_LIMIT_MAX = "30"
+REVEAL_RATE_LIMIT_MAX = "60"
+
+# Set production values with:
+# npx wrangler secret put DEEPSEEK_API_KEY
+# npx wrangler secret put CORS_ORIGIN

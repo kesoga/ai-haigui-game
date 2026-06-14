@@ -8,6 +8,7 @@
 ai-haigui-game-master/
   frontend/   React + TypeScript + Vite + Tailwind CSS
   backend/    Node.js + Express + DeepSeek API proxy
+  backend-worker/ Cloudflare Workers 后端
 ```
 
 ## 本地启动
@@ -54,10 +55,10 @@ npm run dev
 VITE_API_BASE_URL=https://你的后端部署地址
 ```
 
-例如后端部署到 Render：
+例如后端部署到 Cloudflare Workers：
 
 ```env
-VITE_API_BASE_URL=https://ai-haigui-game.onrender.com
+VITE_API_BASE_URL=https://ai-haigui-game-api.your-name.workers.dev
 ```
 
 后端也要允许 Vercel 前端域名访问：
@@ -67,6 +68,27 @@ CORS_ORIGIN=https://你的-vercel-项目.vercel.app
 ```
 
 注意：`VITE_API_BASE_URL` 是公开的后端地址，不是密钥。`DEEPSEEK_API_KEY` 只放在后端环境变量中，不能放到前端或 GitHub。
+
+## Cloudflare Workers 后端部署
+
+无卡部署后端时，推荐使用 `backend-worker/`：
+
+```bash
+cd backend-worker
+npm install
+npx wrangler login
+npx wrangler secret put DEEPSEEK_API_KEY
+npx wrangler secret put CORS_ORIGIN
+npm run deploy
+```
+
+`CORS_ORIGIN` 填你的 Vercel 前端域名，例如：
+
+```text
+https://你的-vercel-项目.vercel.app
+```
+
+部署成功后，把 Worker 地址填回 Vercel 的 `VITE_API_BASE_URL`。
 
 ## 常用命令
 
