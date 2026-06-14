@@ -268,7 +268,6 @@ export function ResultPage() {
               <article
                 key={record.id}
                 className={`rounded-lg border border-amber-100/10 bg-black/30 p-4 transition-all duration-700 ease-out ${isRevealed ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}
-                style={{ animationDelay: `${1800 + index * 200}ms` }}
               >
                 <div className="flex items-start">
                   <div className="mr-4 mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-amber-200/20 bg-amber-400/10 text-xs font-bold text-stone-300">

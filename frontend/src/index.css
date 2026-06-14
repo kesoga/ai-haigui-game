@@ -333,6 +333,52 @@ body {
   animation-delay: var(--shard-delay);
 }
 
+.case-victory-spark-0 { --spark-angle: 0deg; --spark-distance: 88px; --spark-delay: 0s; --spark-size: 4px; }
+.case-victory-spark-1 { --spark-angle: 11.25deg; --spark-distance: 100px; --spark-delay: 0.045s; --spark-size: 6px; }
+.case-victory-spark-2 { --spark-angle: 22.5deg; --spark-distance: 112px; --spark-delay: 0.09s; --spark-size: 8px; }
+.case-victory-spark-3 { --spark-angle: 33.75deg; --spark-distance: 124px; --spark-delay: 0.135s; --spark-size: 4px; }
+.case-victory-spark-4 { --spark-angle: 45deg; --spark-distance: 136px; --spark-delay: 0.18s; --spark-size: 6px; }
+.case-victory-spark-5 { --spark-angle: 56.25deg; --spark-distance: 148px; --spark-delay: 0.225s; --spark-size: 8px; }
+.case-victory-spark-6 { --spark-angle: 67.5deg; --spark-distance: 88px; --spark-delay: 0.27s; --spark-size: 4px; }
+.case-victory-spark-7 { --spark-angle: 78.75deg; --spark-distance: 100px; --spark-delay: 0.315s; --spark-size: 6px; }
+.case-victory-spark-8 { --spark-angle: 90deg; --spark-distance: 112px; --spark-delay: 0.36s; --spark-size: 8px; }
+.case-victory-spark-9 { --spark-angle: 101.25deg; --spark-distance: 124px; --spark-delay: 0.405s; --spark-size: 4px; }
+.case-victory-spark-10 { --spark-angle: 112.5deg; --spark-distance: 136px; --spark-delay: 0.45s; --spark-size: 6px; }
+.case-victory-spark-11 { --spark-angle: 123.75deg; --spark-distance: 148px; --spark-delay: 0.495s; --spark-size: 8px; }
+.case-victory-spark-12 { --spark-angle: 135deg; --spark-distance: 88px; --spark-delay: 0s; --spark-size: 4px; }
+.case-victory-spark-13 { --spark-angle: 146.25deg; --spark-distance: 100px; --spark-delay: 0.045s; --spark-size: 6px; }
+.case-victory-spark-14 { --spark-angle: 157.5deg; --spark-distance: 112px; --spark-delay: 0.09s; --spark-size: 8px; }
+.case-victory-spark-15 { --spark-angle: 168.75deg; --spark-distance: 124px; --spark-delay: 0.135s; --spark-size: 4px; }
+.case-victory-spark-16 { --spark-angle: 180deg; --spark-distance: 136px; --spark-delay: 0.18s; --spark-size: 6px; }
+.case-victory-spark-17 { --spark-angle: 191.25deg; --spark-distance: 148px; --spark-delay: 0.225s; --spark-size: 8px; }
+.case-victory-spark-18 { --spark-angle: 202.5deg; --spark-distance: 88px; --spark-delay: 0.27s; --spark-size: 4px; }
+.case-victory-spark-19 { --spark-angle: 213.75deg; --spark-distance: 100px; --spark-delay: 0.315s; --spark-size: 6px; }
+.case-victory-spark-20 { --spark-angle: 225deg; --spark-distance: 112px; --spark-delay: 0.36s; --spark-size: 8px; }
+.case-victory-spark-21 { --spark-angle: 236.25deg; --spark-distance: 124px; --spark-delay: 0.405s; --spark-size: 4px; }
+.case-victory-spark-22 { --spark-angle: 247.5deg; --spark-distance: 136px; --spark-delay: 0.45s; --spark-size: 6px; }
+.case-victory-spark-23 { --spark-angle: 258.75deg; --spark-distance: 148px; --spark-delay: 0.495s; --spark-size: 8px; }
+.case-victory-spark-24 { --spark-angle: 270deg; --spark-distance: 88px; --spark-delay: 0s; --spark-size: 4px; }
+.case-victory-spark-25 { --spark-angle: 281.25deg; --spark-distance: 100px; --spark-delay: 0.045s; --spark-size: 6px; }
+.case-victory-spark-26 { --spark-angle: 292.5deg; --spark-distance: 112px; --spark-delay: 0.09s; --spark-size: 8px; }
+.case-victory-spark-27 { --spark-angle: 303.75deg; --spark-distance: 124px; --spark-delay: 0.135s; --spark-size: 4px; }
+.case-victory-spark-28 { --spark-angle: 315deg; --spark-distance: 136px; --spark-delay: 0.18s; --spark-size: 6px; }
+.case-victory-spark-29 { --spark-angle: 326.25deg; --spark-distance: 148px; --spark-delay: 0.225s; --spark-size: 8px; }
+.case-victory-spark-30 { --spark-angle: 337.5deg; --spark-distance: 88px; --spark-delay: 0.27s; --spark-size: 4px; }
+.case-victory-spark-31 { --spark-angle: 348.75deg; --spark-distance: 100px; --spark-delay: 0.315s; --spark-size: 6px; }
+
+.case-victory-shard-0 { --shard-angle: 0deg; --shard-delay: 0s; }
+.case-victory-shard-1 { --shard-angle: 30deg; --shard-delay: 0.055s; }
+.case-victory-shard-2 { --shard-angle: 60deg; --shard-delay: 0.11s; }
+.case-victory-shard-3 { --shard-angle: 90deg; --shard-delay: 0.165s; }
+.case-victory-shard-4 { --shard-angle: 120deg; --shard-delay: 0.22s; }
+.case-victory-shard-5 { --shard-angle: 150deg; --shard-delay: 0.275s; }
+.case-victory-shard-6 { --shard-angle: 180deg; --shard-delay: 0.33s; }
+.case-victory-shard-7 { --shard-angle: 210deg; --shard-delay: 0.385s; }
+.case-victory-shard-8 { --shard-angle: 240deg; --shard-delay: 0.44s; }
+.case-victory-shard-9 { --shard-angle: 270deg; --shard-delay: 0.495s; }
+.case-victory-shard-10 { --shard-angle: 300deg; --shard-delay: 0.55s; }
+.case-victory-shard-11 { --shard-angle: 330deg; --shard-delay: 0.605s; }
+
 .case-victory-seal {
   display: flex;
   height: 128px;
@@ -724,6 +770,18 @@ body {
   animation: pageTransition 0.4s ease-out;
 }
 
+.animate-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animate-delay-600 {
+  animation-delay: 600ms;
+}
+
 /* 移动端优化 */
 @media (max-width: 640px) {
   html {
@@ -736,11 +794,6 @@ body {
     padding-right: 16px !important;
     padding-top: 16px !important;
     padding-bottom: 16px !important;
-  }
-  
-  /* 聊天区域高度优化 */
-  section[style*="height: 450px"] {
-    height: 350px !important;
   }
   
   /* 按钮优化 */

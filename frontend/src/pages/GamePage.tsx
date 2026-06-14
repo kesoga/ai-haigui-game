@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ChatBox } from '../components/ChatBox'
 import { stories } from '../constants/stories'
@@ -229,26 +229,10 @@ export function GamePage() {
               <div className="case-victory-ring case-victory-ring-b"></div>
               <div className="case-victory-ring case-victory-ring-c"></div>
               {[...Array(32)].map((_, i) => (
-                <div
-                  key={i}
-                  className="case-victory-spark"
-                  style={{
-                    '--spark-angle': `${i * 11.25}deg`,
-                    '--spark-distance': `${88 + (i % 6) * 12}px`,
-                    '--spark-delay': `${(i % 12) * 0.045}s`,
-                    '--spark-size': `${4 + (i % 3) * 2}px`
-                  } as CSSProperties}
-                ></div>
+                <div key={i} className={`case-victory-spark case-victory-spark-${i}`}></div>
               ))}
               {[...Array(12)].map((_, i) => (
-                <div
-                  key={`shard-${i}`}
-                  className="case-victory-shard"
-                  style={{
-                    '--shard-angle': `${i * 30}deg`,
-                    '--shard-delay': `${i * 0.055}s`
-                  } as CSSProperties}
-                ></div>
+                <div key={`shard-${i}`} className={`case-victory-shard case-victory-shard-${i}`}></div>
               ))}
               <div className="case-victory-seal">
                 <span>真相锁定</span>
@@ -320,7 +304,7 @@ export function GamePage() {
         </header>
 
         {showMessages && (
-          <section className="case-panel mt-4 overflow-hidden md:mt-6 animate-fadeIn" style={{ animationDelay: '300ms', height: '450px' }}>
+          <section className="case-panel mt-4 h-[350px] overflow-hidden animate-fadeIn animate-delay-300 md:mt-6 md:h-[450px]">
             <ChatBox
               messages={messages}
               onSend={handleSendMessage}
@@ -371,7 +355,7 @@ export function GamePage() {
         )}
 
         {showMessages && !showFinalAnswerInput && (
-          <footer className="mt-4 flex flex-col gap-3 md:mt-6 sm:flex-row animate-fadeIn" style={{ animationDelay: '600ms' }}>
+          <footer className="mt-4 flex flex-col gap-3 animate-fadeIn animate-delay-600 sm:flex-row md:mt-6">
             <button onClick={handleViewBottom} className="inline-flex items-center justify-center rounded-lg bg-amber-300 px-6 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-200 hover:scale-105 active:scale-95">
               查看汤底
             </button>

@@ -18,7 +18,7 @@ function ComicBubble({ children, isUser }: { children: ReactNode; isUser: boolea
         {/* 气泡主体 */}
         <div className={`relative rounded-2xl p-4 shadow-xl ${isUser ? 'bg-amber-100 text-stone-950' : 'border border-amber-100/10 bg-stone-900 text-stone-200'}`}>
           {/* 黄色条纹边框 */}
-          <div className="absolute inset-0 rounded-2xl border border-amber-300/35" style={{ borderRadius: '1.5rem' }}></div>
+          <div className="absolute inset-0 rounded-2xl border border-amber-300/35"></div>
           
           {/* 气泡内容 */}
           <div className="relative z-10">
@@ -67,9 +67,9 @@ export function Message({ message, isLoading = false }: MessageProps) {
       <ComicBubble isUser={isUser}>
         {isLoading ? (
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-slate-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-600"></div>
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-600 animate-delay-150"></div>
+            <div className="h-2 w-2 animate-bounce rounded-full bg-slate-600 animate-delay-300"></div>
           </div>
         ) : (
           <p className="text-sm leading-relaxed transition-all duration-300 hover:opacity-90">{message.content}</p>

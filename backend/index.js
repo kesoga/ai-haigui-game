@@ -72,7 +72,7 @@ function rateLimit({ windowMs, max, keyPrefix }) {
       res.set('Retry-After', String(retryAfterSeconds));
       res.status(429).json({
         status: 'error',
-        message: '璇锋眰杩囦簬棰戠箒锛岃绋嶅悗鍐嶈瘯',
+        message: '请求过于频繁，请稍后重试',
         retryAfterSeconds,
         timestamp: new Date().toISOString()
       });
@@ -342,7 +342,7 @@ async function askProviderWithFallback(question, story) {
     }
 
     return {
-      answer: '鏃犲叧',
+      answer: '无关',
       isFallback: true,
       retriesCount: 0,
       providerResponseValid: false
@@ -376,7 +376,7 @@ async function askProviderWithFallback(question, story) {
     retriesCount += 1;
   }
 
-  console.warn('Provider response fell back to 鏃犲叧:', lastRawAnswer);
+  console.warn('Provider response fell back to 无关:', lastRawAnswer);
 
   const localAnswer = answerFromLocalHeuristics(question, story);
   if (localAnswer) {
@@ -388,7 +388,7 @@ async function askProviderWithFallback(question, story) {
   }
 
   return {
-    answer: '鏃犲叧',
+    answer: '无关',
     isFallback: true,
     retriesCount: Math.max(0, retriesCount - 1),
     providerResponseValid: false
@@ -398,7 +398,7 @@ async function askProviderWithFallback(question, story) {
 app.get('/', (req, res) => {
   res.json({
     status: 'success',
-    message: 'AI 娴烽緹姹ゅ悗绔湇鍔¤繍琛屼腑',
+    message: 'AI 海龟汤后端服务运行中',
     endpoints: {
       health: '/api/test',
       chat: '/api/chat'
