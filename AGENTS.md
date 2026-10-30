@@ -51,3 +51,13 @@
 - 先实现最小可用版本，再逐步增强
 - 新增代码优先复用现有组件与工具函数
 
+## Cursor Cloud specific instructions
+
+- Node.js 必须满足 Vite 8：`^20.19.0` 或 `>=22.12.0`。当前镜像自带的 Node 22 可以直接使用。
+- 依赖安装（仓库根目录，可重复执行）：`npm ci --prefix frontend`、`npm ci --prefix backend`、`npm ci --prefix backend-worker`。
+- 本地可玩闭环不依赖 `DEEPSEEK_API_KEY`。不要把 `backend/.env.example` 原样复制成 `backend/.env`：示例里的占位 key 非空，服务会去请求 DeepSeek，而不会走本地启发式兜底。未配置真实 key 时，提问仍会返回「是 / 否 / 无关」，且 `isFallback` 为 true。
+- 前端公开配置写在 `frontend/.env`：`VITE_API_BASE_URL=http://127.0.0.1:3000`。浏览器通过该地址访问后端，不走 Vite 代理。
+- 开发服务：后端 `HOST=0.0.0.0 PORT=3000 CORS_ORIGIN=http://localhost:5173,http://127.0.0.1:5173 npm start --prefix backend`（`http://127.0.0.1:3000`）；前端 `npm run dev --prefix frontend -- --host 0.0.0.0 --port 5173`（`http://127.0.0.1:5173`）。
+- 核心路径：首页选「雨夜电梯」→ `/game/s-001` → 等汤面打字结束后提问 → 三值回答 → 「查看汤底」→ `/result/:sessionId`。
+- 校验命令：`npm test --prefix backend`、`npm run lint --prefix frontend`、`npm run build --prefix frontend`、`npm run check --prefix backend-worker`。
+
